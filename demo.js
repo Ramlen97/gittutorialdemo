@@ -23,3 +23,10 @@ items[2].style.backgroundColor='green';
 for (let i of items){
     i.style.fontWeight='bold';
 }
+
+const item=document.getElementsByTagName('li');
+console.log(item);
+
+for (let i of item){
+    i.style.backgroundColor='#f4f4f4';
+}
