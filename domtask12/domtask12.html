@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>domtask12</title>
+</head>
+<body>
+    <h1>Appointment Booking App</h1>
+    <form onsubmit="storeAndShow(event)">
+        <input type="text" name="username" required/>
+        <input type="email" name="emailId" required/>
+        <button>Submit</button>
+    </form>
+    <ul></ul>
+    <script>
+        document.addEventListener('DOMContentLoaded',()=>{
+            setTimeout(() => {
+                for (let i=0;i<localStorage.length;i++){
+                let key=localStorage.key(i);
+                let obj=JSON.parse(localStorage.getItem(key));
+                let li=document.createElement('li');
+                let ul=document.querySelector("ul");
+                li.appendChild(document.createTextNode(obj.username+' '+obj.emailId))
+                ul.appendChild(li);               
+            }                                
+            }, 3000);          
+                
+        });              
+
+        function  storeAndShow(event){
+            event.preventDefault();
+            const username=event.target.username.value;
+            const emailId=event.target.emailId.value;
+            
+            let obj={
+                username:username,
+                emailId:emailId,
+            }
+            localStorage.setItem('user'+emailId,JSON.stringify(obj));
+
+            let ul=document.querySelector("ul");
+            let li=document.createElement('li')
+            li.appendChild(document.createTextNode(obj.username+' '+obj.emailId));
+            ul.appendChild(li);
+
+        }
+    </script>
+    
+</body>
+</html>
