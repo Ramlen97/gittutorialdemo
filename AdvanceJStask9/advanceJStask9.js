@@ -33,13 +33,12 @@ multiplyByThree=multiplyTwoNumbers.bind(this,3);
 multiplyByThree(5);
 multiplyByTwo(5);
 
-
 multiply=function(x){
     return function (y){
         console.log(x*y);
     }
 }
-console.log(multiply());
+
 multiplyToTwo=multiply(2);
 multiplyToThree=multiply(3);
 multiplyToThree(5);
