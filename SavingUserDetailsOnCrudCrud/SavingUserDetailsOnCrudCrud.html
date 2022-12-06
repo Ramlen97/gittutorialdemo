@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saving User Details on CrudCrud</title>
+</head>
+<body>
+    <h1>Appointment Booking App</h1>
+    <form onsubmit="storeAndShow(event)">
+        <label>Name:</label>
+        <input type="text" id='username'name="username" required/>
+        <label>Email:</label>
+        <input type="email" id='email' name="emailId" required/>
+        <label>Phone Number:</label>
+        <input type="text" id='number' name="number" required/>
+        <button>Submit</button>
+    </form>
+    <ul></ul>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+    <script>
+        console.log(document.body);
+        document.addEventListener('DOMContentLoaded',()=>{
+            setTimeout(() => {
+                axios.get('https://crudcrud.com/api/6c8f9760b49c458fb72157cf52720ed5/appointmentData')
+                .then((res)=>{
+                    userlist=res.data;
+                    for (let user of userlist){                
+                        showUsersOnScreen(user);
+                        // console.log(user._id);
+                    }
+                })
+                .catch(err=>console.log(err))
+                                            
+            }, 1000);               
+        });              
+        
+        function  storeAndShow(event){
+            event.preventDefault();
+            const username=event.target.username.value;
+            const email=event.target.emailId.value;
+            const number=event.target.number.value;
+
+            let obj={
+                username:username,
+                email:email,
+                number:number
+            }
+            
+            axios.post('https://crudcrud.com/api/6c8f9760b49c458fb72157cf52720ed5/appointmentData',obj)
+            .then((res)=>{
+                console.log(res);
+                showUsersOnScreen(obj);
+            })
+            .catch((err)=>{
+                document.body.innerHTML+='<h4>Something went wrong</h4>'
+            })           
+
+            document.getElementById('username').value='';
+            document.getElementById('email').value='';
+            document.getElementById('number').value='';
+
+        }
+
+        function showUsersOnScreen(obj){
+            let ul=document.querySelector("ul");
+            ul.innerHTML+=`<li id='${obj._id}'>${obj.username} ${obj.email} <button onclick="editUser('${obj.username}','${obj.email}','${obj.username}')">Edit</button><button onclick="deleteUser('${obj._id}')">Delete</button></li>`;
+        }
+
+        function deleteUser(id){
+            console.log(id);
+            // node=document.getElementById(id);
+            // parentNode=node.parentNode;
+            // parentNode.removeChild(node);
+            // axios.delete()
+        }
+
+        function editUser(username,email,number){
+            document.getElementById('username').value=username;
+            document.getElementById('email').value=email;
+            doccument.getElementById('number').value=number;
+        }
+    </script>
+    
+</body>
+</html>
