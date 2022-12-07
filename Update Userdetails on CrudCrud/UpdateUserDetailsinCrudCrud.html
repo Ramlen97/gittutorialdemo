@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get User Details from CrudCrud</title>
+</head>
+<body>
+    <h1>Appointment Booking App</h1>
+    <form onsubmit="StoreAndShowUser(event)">
+        <label>Name</label>
+        <input type="text" id="username" name="username" required>
+        <label>Email</label>
+        <input type="email" id="email" name="email"  required>
+        <label>Phone Number</label>
+        <input type="text" id="number" name="number" required>
+        <input type="submit" value="Submit">
+    </form>
+    <ul></ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+    <script>
+        console.log(document.body);
+        document.addEventListener('DOMContentLoaded',()=>{
+            axios.get('https://crudcrud.com/api/6c8f9760b49c458fb72157cf52720ed5/appointmentData')
+            .then((res)=>{
+                userlist=res.data;
+                for (let user of userlist){
+                    showUserOnScreen(user);
+                }
+            })
+            .catch((err)=>{
+                document.body.innerHTML+= "<h4>Error : There is some problem in loading the appointments</h4>";
+            })
+        })
+
+        function StoreAndShowUser(event){
+            event.preventDefault();
+            let name=document.getElementById('username').value;
+            let email=document.getElementById('email').value;
+            let number=document.getElementById('number').value;
+
+            const obj={
+                username:name,
+                email:email,
+                number:number,
+            }
+
+            const updateUser=async()=>{
+                try{
+                    const userlist=await axios.get('https://crudcrud.com/api/6c8f9760b49c458fb72157cf52720ed5/appointmentData')
+                    let f=0;
+                    for (let user of userlist.data){
+                        if (user.email==email){
+                            try{
+                                const res=await axios.put(`https://crudcrud.com/api/6c8f9760b49c458fb72157cf52720ed5/appointmentData/${user._id}`,obj)
+                                // const res1=await axios.get(`https://crudcrud.com/api/6c8f9760b49c458fb72157cf52720ed5/appointmentData/${user._id}`,obj)
+                                obj._id=user._id
+                                showUserOnScreen(obj);
+                            }catch(err){
+                                document.body.innerHTML+= "<h4>Error : There is some problem in updating the appointment</h4>";
+                            }
+                            f=1;
+                        }
+                    }
+                    if (f==0){
+                        axios.post('https://crudcrud.com/api/6c8f9760b49c458fb72157cf52720ed5/appointmentData',obj)
+                        .then((res)=>{
+                        showUserOnScreen(res.data);                
+                        })
+                        .catch((err)=>{
+                            document.body.innerHTML+= "<h4>Error : There is some problem in creating new appointment</h4>";
+                        })
+                    }
+                }catch(err){
+                    document.body.innerHTML+= "<h4>Error : There is some problem in updating the appointment</h4>";
+                }
+            }
+            updateUser();
+
+            document.getElementById('username').value='';
+            document.getElementById('email').value='';
+            document.getElementById('number').value='';
+        }
+
+        function showUserOnScreen(obj){
+            const list=document.querySelector('ul');
+            list.innerHTML+=`<li id='${obj._id}'>${obj.username} ${obj.email} <button onclick=editUser('${obj.username}','${obj.email}','${obj.number}','${obj._id}')>Edit</button><button onclick=deleteUser('${obj._id}')>Delete</button></li>`;
+        }
+
+        function deleteUser(id){
+            axios.delete(`https://crudcrud.com/api/6c8f9760b49c458fb72157cf52720ed5/appointmentData/${id}`)
+            .then((res)=>{
+                node=document.getElementById(id);
+                parentNode=node.parentNode;
+                parentNode.removeChild(node);
+                console.log(res);
+            })
+            .catch((err)=>{
+                document.body.innerHTML+= "<h4>Error : There is some problem in deleting the appointment</h4>";
+            })
+        }
+
+        function editUser(name,email,number,id){
+            document.getElementById('username').value=name;
+            document.getElementById('email').value=email;
+            document.getElementById('number').value=number;
+
+            node=document.getElementById(id);
+            parentNode=node.parentNode;
+            parentNode.removeChild(node);            
+        }
+    </script>
+</body>
+</html>
