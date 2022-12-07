@@ -9,7 +9,9 @@
 <body>
     <h1>Appointment Booking App</h1>
     <form onsubmit="storeAndShow(event)">
+        <label>Name:</label>
         <input type="text" id='username'name="username" required/>
+        <label>Email:</label>
         <input type="email" id='email' name="emailId" required/>
         <button>Submit</button>
     </form>
@@ -47,17 +49,18 @@
 
         function showUsersOnScreen(obj){
             let ul=document.querySelector("ul");
-            ul.innerHTML+=`<li id='${obj.email}'>${obj.username} ${obj.email}<button onclick="editUser('${obj.username}','${obj.email}')">Edit</button><button onclick="deleteUser('${obj.email}')">Delete</button></li>`;
+            ul.innerHTML+=`<li id='${obj.email}'>${obj.username} ${obj.email} <button onclick="editUser('${obj.username}','${obj.email}')">Edit</button><button onclick="deleteUser('${obj.email}')">Delete</button></li>`;
         }
 
-        function deleteUser(user){
-            node=document.getElementById(user);
+        function deleteUser(email){
+            node=document.getElementById(email);
             parentNode=node.parentNode;
             parentNode.removeChild(node);
-            localStorage.removeItem('user'+user);
+            localStorage.removeItem('user'+email);
         }
 
         function editUser(username,email){
+            deleteUser(email);
             document.getElementById('username').value=username;
             document.getElementById('email').value=email;
 
