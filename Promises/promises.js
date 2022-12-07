@@ -81,8 +81,8 @@ updateLastUserActivityTime=new Promise((resolve,reject)=>{
     setTimeout(() => {
             userLastActivityTime=new Date().getTime();
             resolve(userLastActivityTime);            
-        }, 1000);
-    })
+    }, 1000);
+})
 
 function userupdatesapost(post){
     Promise.all([createPost(post),updateLastUserActivityTime])
